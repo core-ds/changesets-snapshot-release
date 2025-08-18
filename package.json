@@ -1,0 +1,30 @@
+{
+  "name": "changesets-snapshot-release",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --transpile-only --minify",
+    "release": "node scripts/release.cjs",
+    "version-package": "changeset version"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "@changesets/read": "^0.6.5"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.6",
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.0",
+    "@vercel/ncc": "^0.38.3",
+    "eslint": "^9.33.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
