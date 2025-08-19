@@ -10,17 +10,26 @@ async function main() {
 
   const { exitCode, stderr } = await getExecOutput(
     `git`,
-    ["ls-remote", "--exit-code", "origin", "--tags", `refs/tags/${tag}`],
+    [
+      "ls-remote",
+      /**
+       * Exit with status "2" when no matching refs are found in the remote repository.
+       * Usually the command exits with status "0" to indicate it successfully talked with the remote repository,
+       * whether it found any matching refs.
+       *
+       * @see https://git-scm.com/docs/git-ls-remote#Documentation/git-ls-remote.txt---exit-code
+       */
+      "--exit-code",
+      "origin",
+      "--tags",
+      `refs/tags/${tag}`,
+    ],
     { ignoreReturnCode: true }
   );
   if (exitCode === 0) {
     console.log(`Action is not being published because version ${tag} is already published`);
     return;
   }
-  /**
-   * Exit with status "2" when no matching refs are found in the remote repository.
-   * @see https://git-scm.com/docs/git-ls-remote#Documentation/git-ls-remote.txt---exit-code
-   */
   if (exitCode !== 2) {
     throw new Error(`git ls-remote exited with ${exitCode.toString()}:\n${stderr}`);
   }
