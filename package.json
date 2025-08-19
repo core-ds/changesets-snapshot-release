@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.ts -o dist --transpile-only --minify",
-    "release": "npm run build && node scripts/release.cjs",
+    "release": "npm run build && node scripts/release.mjs",
     "version-package": "changeset version"
   },
   "dependencies": {

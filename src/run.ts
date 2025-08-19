@@ -4,7 +4,7 @@ import path from "node:path";
 import * as process from "node:process";
 
 import * as core from "@actions/core";
-import * as exec from "@actions/exec";
+import { exec, getExecOutput } from "@actions/exec";
 import readChangesets from "@changesets/read";
 
 function getOptionalInput(name: string) {
@@ -30,7 +30,7 @@ export async function run() {
     const versionScript = core.getInput("version", { required: true });
     const [versionCmd, ...versionCmdArgs] = versionScript.split(/\s+/);
 
-    await exec.exec(versionCmd, versionCmdArgs, { cwd });
+    await exec(versionCmd, versionCmdArgs, { cwd });
   });
 
   await core.group("Setup .npmrc", async () => {
@@ -65,7 +65,7 @@ export async function run() {
   const publishedPackages = await core.group("Publishing packages", async () => {
     const publishScript = core.getInput("publish", { required: true });
     const [publishCmd, ...publishCmdArgs] = publishScript.split(/\s+/);
-    const { stdout } = await exec.getExecOutput(publishCmd, publishCmdArgs, { cwd });
+    const { stdout } = await getExecOutput(publishCmd, publishCmdArgs, { cwd });
 
     // text from https://github.com/changesets/changesets/blob/dc83cb4dce0de726ca70593d4bef6f3f2c3d5278/packages/cli/src/commands/publish/index.ts#L91
     const SUCCESS_TEXT = "packages published successfully:";

@@ -2,10 +2,11 @@
 
 // copied from https://github.com/changesets/action/blob/04d574e831923498156e0b2b93152878063203a3/scripts/release.ts
 
-const { version } = require("../package.json");
-const { exec, getExecOutput } = require("@actions/exec");
+import pkg from "../package.json" with { type: "json" };
+import { exec, getExecOutput } from "@actions/exec";
 
 async function main() {
+  const { version } = pkg;
   const tag = `v${version}`;
 
   const { exitCode, stderr } = await getExecOutput(
