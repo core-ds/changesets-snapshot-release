@@ -34,31 +34,34 @@ export async function run() {
   });
 
   await core.group("Setup .npmrc", async () => {
-    const userNpmrcPath = path.join(process.env.HOME!, ".npmrc");
+    const userNpmrcPath = path.join(process.env.HOME, ".npmrc");
+    const { NPM_TOKEN } = process.env;
 
-    if (existsSync(userNpmrcPath)) {
-      core.info("Found existing user .npmrc file");
-      const userNpmrcContent = await fs.readFile(userNpmrcPath, {
-        encoding: "utf8",
-      });
-      const hasAuthLine = userNpmrcContent.split("\n").some((line) =>
-        // check based on https://github.com/npm/cli/blob/8f8f71e4dd5ee66b3b17888faad5a7bf6c657eed/test/lib/adduser.js#L103-L105
-        /^\s*\/\/registry\.npmjs\.org\/:[_-]authToken=/i.test(line)
-      );
+    if (NPM_TOKEN) {
+      if (existsSync(userNpmrcPath)) {
+        core.info("Found existing user .npmrc file");
+        const userNpmrcContent = await fs.readFile(userNpmrcPath, {
+          encoding: "utf8",
+        });
+        const hasAuthLine = userNpmrcContent.split("\n").some((line) =>
+          // check based on https://github.com/npm/cli/blob/8f8f71e4dd5ee66b3b17888faad5a7bf6c657eed/test/lib/adduser.js#L103-L105
+          /^\s*\/\/registry\.npmjs\.org\/:[_-]authToken=/i.test(line)
+        );
 
-      if (hasAuthLine) {
-        core.info("Found existing auth token for the npm registry in the user .npmrc file");
+        if (hasAuthLine) {
+          core.info("Found existing auth token for the npm registry in the user .npmrc file");
+        } else {
+          core.info("Didn't find existing auth token for the npm registry in the user .npmrc file, creating one");
+          await fs.appendFile(userNpmrcPath, `\n//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n`, {
+            encoding: "utf8",
+          });
+        }
       } else {
-        core.info("Didn't find existing auth token for the npm registry in the user .npmrc file, creating one");
-        await fs.appendFile(userNpmrcPath, `\n//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN!}\n`, {
+        core.info("No user .npmrc file found, creating one");
+        await fs.writeFile(userNpmrcPath, `//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n`, {
           encoding: "utf8",
         });
       }
-    } else {
-      core.info("No user .npmrc file found, creating one");
-      await fs.writeFile(userNpmrcPath, `//registry.npmjs.org/:_authToken=${process.env.NPM_TOKEN!}\n`, {
-        encoding: "utf8",
-      });
     }
   });
 
