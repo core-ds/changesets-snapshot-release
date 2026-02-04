@@ -19,11 +19,16 @@ export async function run() {
   const changesets = await core.group("Reading changesets", () => readChangesets(cwd));
 
   if (changesets.length === 0) {
-    core.warning("Didn't find any changeset. Nothing to publish");
-    core.setOutput("published", JSON.stringify(false));
-    core.setOutput("published-packages", JSON.stringify([]));
+    core.warning("Didn't find any changeset");
 
-    return;
+    const exitIfNoChangesets = (getOptionalInput("exit-if-no-changesets") ?? "true") === "true";
+
+    if (exitIfNoChangesets) {
+      core.setOutput("published", JSON.stringify(false));
+      core.setOutput("published-packages", JSON.stringify([]));
+
+      return;
+    }
   }
 
   await core.group("Version packages", async () => {
