@@ -1,5 +1,11 @@
 # changesets-snapshot-release
 
+## 1.1.1
+
+### Patch Changes
+
+- 4d1443e: Added `exit-if-no-changesets` flag
+
 ## 1.1.0
 
 ### Minor Changes
