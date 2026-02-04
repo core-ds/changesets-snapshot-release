@@ -13,6 +13,10 @@ inputs:
   cwd:
     description: Sets the cwd for the node process. Default to `process.cwd()`
     required: false
+  exit-if-no-changesets:
+    description: Stops action running if no changesets found
+    required: false
+    default: 'true'
 outputs:
   published:
     description: A boolean value to indicate whether a publishing is happened or not

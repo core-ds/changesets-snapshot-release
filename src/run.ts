@@ -7,10 +7,20 @@ import * as core from "@actions/core";
 import { exec, getExecOutput } from "@actions/exec";
 import readChangesets from "@changesets/read";
 
-function getOptionalInput(name: string) {
+interface PackageData {
+  name: string;
+  version: string;
+}
+
+function getOptionalInput(name: string): string | undefined {
   const input = core.getInput(name);
 
-  return input.length > 0 ? input : undefined;
+  return input || undefined;
+}
+
+function setOutput(publishedPackages: PackageData[]): void {
+  core.setOutput("published", JSON.stringify(publishedPackages.length > 0));
+  core.setOutput("published-packages", JSON.stringify(publishedPackages));
 }
 
 export async function run() {
@@ -19,11 +29,15 @@ export async function run() {
   const changesets = await core.group("Reading changesets", () => readChangesets(cwd));
 
   if (changesets.length === 0) {
-    core.warning("Didn't find any changeset. Nothing to publish");
-    core.setOutput("published", JSON.stringify(false));
-    core.setOutput("published-packages", JSON.stringify([]));
+    core.warning("Didn't find any changeset");
 
-    return;
+    const exitIfNoChangesets = (getOptionalInput("exit-if-no-changesets") ?? "true") === "true";
+
+    if (exitIfNoChangesets) {
+      setOutput([]);
+
+      return;
+    }
   }
 
   await core.group("Version packages", async () => {
@@ -91,7 +105,7 @@ export async function run() {
     return stdout
       .slice(startIndex, endIndex)
       .split("\n")
-      .reduce<{ name: string; version: string }[]>((packages, line) => {
+      .reduce<PackageData[]>((packages, line) => {
         // regexp based on https://github.com/changesets/action/blob/06245a4e0a36c064a573d4150030f5ec548e4fcc/src/run.ts#L139
         const match = line.match(/(@[^/\s]+\/[^@]+|[^/\s]+)@([^\s]+)/);
 
@@ -105,6 +119,5 @@ export async function run() {
       }, []);
   });
 
-  core.setOutput("published", JSON.stringify(publishedPackages.length > 0));
-  core.setOutput("published-packages", JSON.stringify(publishedPackages));
+  setOutput(publishedPackages);
 }
