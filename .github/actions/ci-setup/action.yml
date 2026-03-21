@@ -1,6 +1,6 @@
 name: Setup CI
 
-description: Setup node and dependencies
+description: Setup node and install dependencies
 
 runs:
   using: composite
