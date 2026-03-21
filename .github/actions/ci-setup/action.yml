@@ -1,11 +1,11 @@
-name: Setup ci
+name: Setup CI
 
 description: Setup node and dependencies
 
 runs:
   using: composite
   steps:
-    - name: setup nodejs
+    - name: Setup node
       uses: actions/setup-node@v6
       with:
         node-version-file: ".node-version"

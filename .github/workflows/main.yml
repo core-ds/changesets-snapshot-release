@@ -15,7 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: ./.github/actions/ci-setup
+      - name: Setup CI
+        uses: ./.github/actions/ci-setup
 
       - name: Lint
         run: |
@@ -28,7 +29,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: ./.github/actions/ci-setup
+      - name: Setup CI
+        uses: ./.github/actions/ci-setup
 
       - name: Lint
         run: |
@@ -41,7 +43,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: ./.github/actions/ci-setup
+      - name: Setup CI
+        uses: ./.github/actions/ci-setup
 
       - name: Check types
         run: |
@@ -54,7 +57,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: ./.github/actions/ci-setup
+      - name: Setup CI
+        uses: ./.github/actions/ci-setup
 
       - name: Build
         run: |
