@@ -1,7 +1,7 @@
 name: changesets-snapshot-release
 description: A GitHub action to automate snapshot releases with Changesets
 runs:
-  using: "node20"
+  using: "node24"
   main: "dist/index.js"
 inputs:
   publish:
@@ -16,7 +16,7 @@ inputs:
   exit-if-no-changesets:
     description: Stops action running if no changesets found
     required: false
-    default: 'true'
+    default: "true"
 outputs:
   published:
     description: A boolean value to indicate whether a publishing is happened or not
