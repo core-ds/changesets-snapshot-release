@@ -61,7 +61,7 @@ jobs:
           yarn build
 
   ci-ok:
-    name: ci ok
+    name: CI ok
     runs-on: ubuntu-latest
     if: always()
     needs: [lint, build, format, check_types]
