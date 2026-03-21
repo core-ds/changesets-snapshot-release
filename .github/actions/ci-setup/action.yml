@@ -1,27 +1,17 @@
-name: setup ci
+name: Setup CI
+
+description: Setup node and dependencies
 
 runs:
   using: composite
   steps:
-    - id: detect
-      shell: bash
-      run: |
-        NODE_VERSION_FILE=.node-version
-        NODE_VERSION=22
-
-        if [ -f $NODE_VERSION_FILE ]; then
-            NODE_VERSION="$(cat $NODE_VERSION_FILE)"
-        fi
-
-        echo "node-version=$NODE_VERSION" >> "$GITHUB_OUTPUT"
-
-    - name: setup nodejs
-      uses: actions/setup-node@v4
+    - name: Setup node
+      uses: actions/setup-node@v6
       with:
-        node-version: ${{ steps.detect.outputs.node-version }}
-        cache: npm
+        node-version-file: ".node-version"
+        cache: yarn
 
-    - name: install dependencies
+    - name: Install dependencies
       shell: bash
       run: |
-        npm install
+        yarn install --immutable
