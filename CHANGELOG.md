@@ -1,5 +1,11 @@
 # changesets-snapshot-release
 
+## 1.1.2
+
+### Patch Changes
+
+- db2488f: Uses node@24
+
 ## 1.1.1
 
 ### Patch Changes
